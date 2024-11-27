@@ -7,6 +7,7 @@ import {
   FaMoneyBill,
   FaMapMarker,
 } from "react-icons/fa";
+
 const PropertyCard = ({ property }) => {
   const getRateDisplay = () => {
     const { rates } = property;
@@ -17,13 +18,19 @@ const PropertyCard = ({ property }) => {
     } else if (rates.nightly) {
       return `$${rates.nightly.toLocaleString()}/night`;
     }
+    return "N/A";
   };
+
+  // Ensure property.images is defined and has at least one valid entry
+  const imageUrl =
+    property.images && property.images.length > 0
+      ? property.images[0]
+      : "/default-image.jpg";
+
   return (
     <div className="rounded-xl shadow-md relative">
       <Image
-        src={
-          property.images.length > 0 ? property.images[0] : "/default-image.jpg"
-        }
+        src={imageUrl}
         alt="Property Image"
         width={500}
         height={300}
@@ -67,8 +74,7 @@ const PropertyCard = ({ property }) => {
           <div className="flex align-middle gap-2 mb-4 lg:mb-0">
             <FaMapMarker className="text-orange-700 mt-1" />
             <span className="text-orange-700">
-              {" "}
-              {property.location.city} {property.location.state}{" "}
+              {property.location.city} {property.location.state}
             </span>
           </div>
           <Link
@@ -82,4 +88,5 @@ const PropertyCard = ({ property }) => {
     </div>
   );
 };
+
 export default PropertyCard;
