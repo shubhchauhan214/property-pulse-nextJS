@@ -5,6 +5,8 @@ import { getSessionUser } from "@/utils/getSessionUser";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import cloudinary from "@/config/cloudinary";
+import { Buffer } from "buffer";
+
 
 async function addProperty(formData) {
   await connectDB();
@@ -20,7 +22,10 @@ async function addProperty(formData) {
   // Access all values from amenities and images
   const amenities = formData.getAll("amenities");
   const images = formData.getAll("images").filter(
-    (image) => image.name !== '');
+    (image) => image.name && image.type.startsWith("image/")
+  );
+
+  console.log("Number of images received:", images.length);
 
   if (images.length === 0) {
     throw new Error("No valid images were provided.");
@@ -57,6 +62,7 @@ async function addProperty(formData) {
   const failedUploads = [];
 
   for (const imageFile of images) {
+    console.log("Uploading image:", imageFile.name, "Type:", imageFile.type, "Size:", imageFile.size); // Log image details
     try {
       const imageBuffer = await imageFile.arrayBuffer();
       const imageArray = new Uint8Array(imageBuffer);
@@ -71,9 +77,11 @@ async function addProperty(formData) {
         folder: "propertypulse",
       });
 
+      console.log("Upload successful:", result.secure_url); // Log successful upload URL
+
       imageUrls.push(result.secure_url);
     } catch (error) {
-      console.error("Error uploading image:", imageFile.name, error);
+      console.error("Error uploading image:", imageFile.name,  "Error message:", error.message);
       failedUploads.push(imageFile.name);
     }
   }

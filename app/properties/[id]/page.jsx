@@ -6,9 +6,18 @@ import Property from "@/models/Property";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import { convertToSerializableObject } from "@/utils/convertToObject";
+import mongoose from 'mongoose';
+import BookmarkButton from "@/components/BookmarkButton";
+import ShareButton from "@/components/ShareButton";
+import PropertyContactForm from "@/components/PropertyContactForm";
+
 
 const PropertyPage = async ({ params }) => {
   await connectDB();
+  console.log("Params:", params); // Log the params to check their content
+  if (!mongoose.isValidObjectId(params.id)) {
+    throw new Error("Invalid property ID");
+  }
   const propertyDoc = await Property.findById(params.id).lean();
   const property = convertToSerializableObject(propertyDoc);
 
@@ -37,6 +46,11 @@ const PropertyPage = async ({ params }) => {
         <div className="container m-auto py-10 px-6">
           <div className="grid grid-cols-1 md:grid-cols-70/30 w-full gap-6">
             <PropertyDetails property={property} />
+            <aside className="space-y-4">
+              <BookmarkButton property={property}/>
+              <ShareButton property={property}/>
+              <PropertyContactForm property={property}/>
+            </aside>
           </div>
         </div>
       </section>

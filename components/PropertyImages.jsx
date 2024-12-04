@@ -1,13 +1,17 @@
 import Image from "next/image";
 
 const PropertyImages = ({ images }) => {
+  if (!images || images.length === 0) {
+    return null; 
+  }
+
   return (
     <section className="bg-blue-50 p-4">
       <div className="container mx-auto">
         {images.length === 1 ? (
           <Image
-            src={images[0]}
-            alt=""
+            src={images[0] || "/default-image.jpg"}
+            alt="Property Image"
             className="object-cover h-[400px] mx-auto rounded-xl"
             width={1800}
             height={400}
@@ -23,8 +27,8 @@ const PropertyImages = ({ images }) => {
               }`}
               >
                 <Image
-                  src={image}
-                  alt=""
+                  src={image || "/default-image.jpg"}
+                  alt="Property Image"
                   className="object-cover h-[400px] w-full rounded-xl"
                   width={1800}
                   height={400}
