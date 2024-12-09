@@ -8,7 +8,6 @@ const connectDB = async () => {
 
     // If the databse is already connected, don't connect again
     if(connected) {
-        console.log("MongoDB is connected");
         return;
     }
 
